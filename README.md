@@ -1,5 +1,3 @@
-# OrderSystem
-
 # OrderSystemMicroservices
 
 Bu proje, .NET 8 ile geliştirilmiş, mikroservis mimarisini temel alan örnek bir sistemdir. JWT Authentication, Authorization, Kafka, Angular gibi modern teknolojilerle donatılmıştır. Hem backend hem frontend açısından kurumsal bir yapıyı simüle eder.
