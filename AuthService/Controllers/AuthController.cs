@@ -37,6 +37,28 @@ namespace AuthService.Controllers
             return Ok(token);
         }
 
+        [HttpPost("register")]
+        public IActionResult Register([FromBody] RegisterRequest request)
+        {
+            var existingUser = _context.Users.FirstOrDefault(u => u.Username == request.Username);
+            if (existingUser != null)
+            {
+                return BadRequest("Bu kullanıcı adı zaten kayıtlı.");
+            }
+
+            var hashedPassword = PasswordHasher.Hash(request.Password);
+            var user = new User
+            {
+                Username = request.Username,
+                PasswordHash = hashedPassword
+            };
+
+            _context.Users.Add(user);
+            _context.SaveChanges();
+
+            return Ok("Kayıt başarılı.");
+        }
+
         private AuthResponse GenerateToken(User user)
         {
             var jwtSettings = _configuration.GetSection("JwtSettings");
