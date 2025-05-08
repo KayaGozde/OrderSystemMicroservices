@@ -2,6 +2,7 @@
 using AuthService.Models;
 using AuthService.RequestModels;
 using AuthService.ResponseModels;
+using AuthService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -29,7 +30,7 @@ namespace AuthService.Controllers
         {
             var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
 
-            if (user == null || user.PasswordHash != request.Password) // şimdilik düz karşılaştırma
+            if (user == null || user.PasswordHash != PasswordHasher.Hash(request.Password)) // şimdilik düz karşılaştırma
                 return Unauthorized("Kullanıcı adı veya şifre yanlış");
 
             var token = GenerateToken(user);
