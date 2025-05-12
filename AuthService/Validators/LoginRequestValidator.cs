@@ -7,8 +7,8 @@ namespace AuthService.Validators
     {
         public LoginRequestValidator()
         {
-            RuleFor(x => x.Username).NotEmpty().WithMessage("Kullanıcı adı zorunludur");
-            RuleFor(x => x.Password).NotEmpty().WithMessage("Şifre zorunludur");
+            RuleFor(x => x.Username).NotEmpty();
+            RuleFor(x => x.Password).NotEmpty();
         }
     }
 }

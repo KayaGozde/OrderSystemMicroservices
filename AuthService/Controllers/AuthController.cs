@@ -1,14 +1,16 @@
 ﻿using AuthService.Data;
+using AuthService.Dtos;
 using AuthService.Models;
 using AuthService.RequestModels;
 using AuthService.ResponseModels;
-using AuthService.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
+using AuthService.Interfaces;
 
 namespace AuthService.Controllers
 {
@@ -18,75 +20,32 @@ namespace AuthService.Controllers
     {
         private readonly AuthDbContext _context;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
 
-        public AuthController(AuthDbContext context, IConfiguration configuration)
+        public AuthController(AuthDbContext context, IConfiguration configuration,IMapper mapper, IAuthService authService)
         {
             _context = context;
             _configuration = configuration;
+            _mapper = mapper;
+            _authService = authService; 
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginRequest request)
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
-            var user = _context.Users.FirstOrDefault(u => u.Username == request.Username);
-
-            if (user == null || user.PasswordHash != PasswordHasher.Hash(request.Password)) // şimdilik düz karşılaştırma
-                return Unauthorized("Kullanıcı adı veya şifre yanlış");
-
-            var token = GenerateToken(user);
-            return Ok(token);
+            var dto = _mapper.Map<LoginDto>(request);
+            var result = await _authService.LoginAsync(dto);
+            return Ok(result);
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterRequest request)
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
-            var existingUser = _context.Users.FirstOrDefault(u => u.Username == request.Username);
-            if (existingUser != null)
-            {
-                return BadRequest("Bu kullanıcı adı zaten kayıtlı.");
-            }
-
-            var hashedPassword = PasswordHasher.Hash(request.Password);
-            var user = new User
-            {
-                Username = request.Username,
-                PasswordHash = hashedPassword
-            };
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Ok("Kayıt başarılı.");
+            var dto = _mapper.Map<RegisterDto>(request);
+            var result = await _authService.RegisterAsync(dto);
+            return Ok(result);
         }
 
-        private AuthResponse GenerateToken(User user)
-        {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]!));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var expires = DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpireMinutes"]));
-
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
-            };
-
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: expires,
-                signingCredentials: creds
-            );
-
-            return new AuthResponse
-            {
-                Token = new JwtSecurityTokenHandler().WriteToken(token),
-                ExpiresAt = expires
-            };
-        }
     }
 }

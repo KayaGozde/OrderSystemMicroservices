@@ -5,6 +5,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using FluentValidation.AspNetCore;
 using FluentValidation;
+using AuthService.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");
@@ -28,11 +29,15 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 Encoding.UTF8.GetBytes(jwtSettings["Key"]!))
         };
     });
+builder.Services.AddAutoMapper(typeof(Program));
+
+builder.Services.AddScoped<IAuthService, AuthService.Services.AuthService>();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AuthDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -49,5 +54,7 @@ app.UseAuthorization();
 app.UseAuthentication();
 
 app.MapControllers();
+
+
 
 app.Run();

@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AuthService.Services
+namespace AuthService.Helpers
 {
     public static class PasswordHasher
     {

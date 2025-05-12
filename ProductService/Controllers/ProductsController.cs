@@ -1,41 +1,37 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
-using ProductService.Data;
-using ProductService.Models;
-using Microsoft.AspNetCore.Authorization;
+using ProductService.Interfaces;
+using ProductService.RequestModels;
+using ProductService.Dtos;
 
 namespace ProductService.Controllers
 {
-    [Authorize]
     [ApiController]
-    [Route("api/[controller]")]
-
-    public class ProductsController : ControllerBase
+    [Route("api/products")]
+    public class ProductController : ControllerBase
     {
-        private readonly ProductDbContext _context;
+        private readonly IProductService _productService;
+        private readonly IMapper _mapper;
 
-        public ProductsController(ProductDbContext context)
+        public ProductController(IProductService productService, IMapper mapper)
         {
-            _context = context;
+            _productService = productService;
+            _mapper = mapper;
         }
 
-       //GET: api/products
-       [HttpGet]
-        public IActionResult GetProducts()
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
         {
-            var products = _context.Products.ToList();
+            var products = await _productService.GetAllAsync();
             return Ok(products);
         }
 
-        // POST: api/products
         [HttpPost]
-        public IActionResult AddProduct([FromBody] Product product)
+        public async Task<IActionResult> Add(ProductRequest request)
         {
-            _context.Products.Add(product);
-            _context.SaveChanges();
-            return CreatedAtAction(nameof(GetProducts), new { id = product.Id }, product);
+            var dto = _mapper.Map<ProductDto>(request);
+            var result = await _productService.AddAsync(dto);
+            return Ok(result);
         }
     }
-
-
 }
