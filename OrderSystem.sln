@@ -3,9 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductService", "ProductService\ProductService.csproj", "{A6299DB6-0682-4BC1-BF61-F830F81744D1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ProductService", "ProductService\ProductService.csproj", "{A6299DB6-0682-4BC1-BF61-F830F81744D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "AuthService\AuthService.csproj", "{6860FE3F-E9FC-4D11-8DEA-6E91EEABCDA9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthService", "AuthService\AuthService.csproj", "{6860FE3F-E9FC-4D11-8DEA-6E91EEABCDA9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ProductConsumer", "ProductConsumer\ProductConsumer.csproj", "{52B53A52-682D-45C2-AFDB-E47B63A335DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{6860FE3F-E9FC-4D11-8DEA-6E91EEABCDA9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6860FE3F-E9FC-4D11-8DEA-6E91EEABCDA9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6860FE3F-E9FC-4D11-8DEA-6E91EEABCDA9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52B53A52-682D-45C2-AFDB-E47B63A335DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52B53A52-682D-45C2-AFDB-E47B63A335DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52B53A52-682D-45C2-AFDB-E47B63A335DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52B53A52-682D-45C2-AFDB-E47B63A335DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
